@@ -4,5 +4,8 @@ CFLAGS += -Wstrict-prototypes
 
 all: zns-bench
 
-zns-bench: librocksdb src/zns-bench.cc
-	$(CXX) $@.cc -o$@ # TODO: put static lib dir: ../librocksdb.a -I../include -O2 -std=c++11
+zns-bench: src/zns-bench.cc
+	$(CXX) $^ -o$@ /usr/local/lib/librocksdb.a -lpthread -ldl -I../rocksdb/include -O2 -std=c++11
+
+clean:
+	$(RM) zns-bench

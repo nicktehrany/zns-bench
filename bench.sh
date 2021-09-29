@@ -17,8 +17,9 @@ mkdir -p results
 CMD="$DB_BENCH --db=$DIR --benchmarks=fillseq,fillrandom,readseq,readrandom --key_size=16 --value_size=100 --num=10000000 --reads=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
 
 for ((i = 0 ; i <= $ITERS ; i++)); do
-    $CMD | grep "fillseq" | awk '{print $3,$5,$7}' >> results/Fillseq-$CONFIG
-    $CMD | grep "fillrand" | awk '{print $3,$5,$7}' >> results/Fillrand-$CONFIG
-    $CMD | grep "readseq" | awk '{print $3,$5,$7}' >> results/Readseq-$CONFIG
-    $CMD | grep "readrand" | awk '{print $3,$5,$7}' >> results/Readrand-$CONFIG
+    RESULT="$(CMD)"
+    echo $RESULT | grep "fillseq" | awk '{print $3,$5,$7}' >> results/Fillseq-$CONFIG
+    echo $RESULT | grep "fillrand" | awk '{print $3,$5,$7}' >> results/Fillrand-$CONFIG
+    echo $RESULT | grep "readseq" | awk '{print $3,$5,$7}' >> results/Readseq-$CONFIG
+    echo $RESULT | grep "readrand" | awk '{print $3,$5,$7}' >> results/Readrand-$CONFIG
 done

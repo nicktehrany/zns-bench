@@ -86,6 +86,3 @@ if __name__ == "__main__":
 
     for type in types:
         plot(results[type], type)
-    #plot(ops_sec, ops_stdev, "Fillseq")
-    #plot(mb_sec, mb_stdev, "Fillseq")
-

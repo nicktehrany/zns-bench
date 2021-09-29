@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Exptect input 1: directory, 2: the number of the config given as e.g."config-0"
-echo $#
 if [ $# != 2 ]; then
     echo "Missing directory or data filename"
     exit 1

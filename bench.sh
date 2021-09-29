@@ -15,6 +15,8 @@ mkdir -p results
 
 CMD="$DB_BENCH --db=$DIR --benchmarks=fillseq,fillrandom,readseq,readrandom --key_size=16 --value_size=100 --num=10000000 --reads=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
 
+echo "micros/op ops/sec MB/s" | tee Fillseq-$CONFIG Fillrand-$CONFIG Readseq-$CONFIG Readrand-$CONFIG > /dev/null
+
 for ((i = 0 ; i <= $ITERS ; i++)); do
     RESULT="$(CMD)"
     echo $RESULT | grep "fillseq" | awk '{print $3,$5,$7}' >> results/Fillseq-$CONFIG

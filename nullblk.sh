@@ -35,7 +35,7 @@ function create_zoned_nullb()
         echo 2 > "$dev"/queue_mode
         echo 1024 > "$dev"/hw_queue_depth
         echo 1 > "$dev"/memory_backed
-        echo 1 > "$dev"/zoned
+        echo 0 > "$dev"/zoned
 
         echo $cap > "$dev"/size
         echo $zs > "$dev"/zone_size

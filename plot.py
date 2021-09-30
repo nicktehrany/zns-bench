@@ -47,7 +47,7 @@ def plot_benchmarks(data, type, benchs, t):
     rects4 = ax.bar(x + 3*(width/2), config_4, width, yerr=config_4_stdev, capsize=5, label='Config-4')
 
     ax.set_ylabel(type)
-    ax.set_xlabel("Configuration")
+    ax.set_xlabel("Benchmark")
     ax.set_title(f"{type} for {t} Operatioins")
     ax.set_xticks(x)
     ax.set_xticklabels(benchs)

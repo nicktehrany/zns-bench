@@ -11,7 +11,14 @@ benchmarks = ["Fillseq", "Fillrand", "Overwrite", "Updaterandom", "Readseq", "Re
 configs = ["config-1", "config-2", "config-3", "config-4"]
 types = ["microsec/op", "ops/sec", "MB/sec"]
 
+
 def plot(data, type):
+    write = benchmarks[:4]
+    read = benchmarks[4:]
+    plot_benchmarks(data, type, write, "Write")
+    plot_benchmarks(data, type, read, "Read")
+
+def plot_benchmarks(data, type, benchs, t):
     config_1 = []
     config_2 = []
     config_3 = []
@@ -21,7 +28,7 @@ def plot(data, type):
     config_3_stdev = []
     config_4_stdev = []
 
-    for benchmark in benchmarks:
+    for benchmark in benchs:
         config_1.append(data['config-1'][benchmark]['val'])
         config_2.append(data['config-2'][benchmark]['val'])
         config_3.append(data['config-3'][benchmark]['val'])
@@ -31,7 +38,7 @@ def plot(data, type):
         config_3_stdev.append(data['config-3'][benchmark]['stdev'])
         config_4_stdev.append(data['config-4'][benchmark]['stdev'])
 
-    x = np.arange(len(benchmarks)) 
+    x = np.arange(len(benchs)) 
     width = 0.2
     fig, ax = plt.subplots()
     rects1 = ax.bar(x - 3*(width/2), config_1, width, yerr=config_1_stdev, capsize=5, label='Config-1')
@@ -41,9 +48,9 @@ def plot(data, type):
 
     ax.set_ylabel(type)
     ax.set_xlabel("Configuration")
-    ax.set_title(f"{type} for the 4 Configurations")
+    ax.set_title(f"{type} for {t} Operatioins")
     ax.set_xticks(x)
-    ax.set_xticklabels(benchmarks)
+    ax.set_xticklabels(benchs)
     ax.legend(loc='best')
     
     # This shows the value at the top of the bar
@@ -57,7 +64,7 @@ def plot(data, type):
     ax.set_axisbelow(True)
     ax.grid(which='major', linestyle='dashed', linewidth='1')
     name = type.replace("/", "-")
-    plt.savefig(f"plots/{name}.png", bbox_inches="tight")
+    plt.savefig(f"plots/{name}-{t}.png", bbox_inches="tight")
     plt.clf()
     
 

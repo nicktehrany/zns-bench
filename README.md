@@ -12,7 +12,7 @@ It requires 2 arguments,
 ```bash
 ./bench.sh [mnt-dir] [config-nr]
 
-mnt-dir: /mnt/f2fs
+mnt-dir: /mnt/f2fs (for config-4 this is the device name, e.g. nullb0)
 config-nr: config-* (1-4, has to be this exact naming!)
 ```
 

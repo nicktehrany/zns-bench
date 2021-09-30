@@ -5,8 +5,9 @@ import statistics
 import pandas as pd
 import os
 import glob
+import matplotlib.ticker as ticker
 
-benchmarks = ["Fillseq", "Fillrand", "Readseq", "Readrand"]
+benchmarks = ["Fillseq", "Fillrand", "Overwrite", "Updaterandom", "Readseq", "Readrand"]
 configs = ["config-1", "config-2", "config-3", "config-4"]
 types = ["microsec/op", "ops/sec", "MB/sec"]
 
@@ -43,17 +44,20 @@ def plot(data, type):
     ax.set_title(f"{type} for the 4 Configurations")
     ax.set_xticks(x)
     ax.set_xticklabels(benchmarks)
-    ax.legend()
-    ax.bar_label(rects1, padding=3)
-    ax.bar_label(rects2, padding=3)
-    ax.bar_label(rects3, padding=3)
-    ax.bar_label(rects4, padding=3)
+    ax.legend(loc='best')
+    
+    # This shows the value at the top of the bar
+    #ax.bar_label(rects1, fontsize=8, padding=3, fmt="%.1f")
+    #ax.bar_label(rects2, fontsize=8, padding=3, fmt="%.1f")
+    #ax.bar_label(rects3, fontsize=8, padding=3, fmt="%.1f")
+    #ax.bar_label(rects4, fontsize=8, padding=3, fmt="%.1f")
+
     fig.tight_layout()
+    ax.get_yaxis().set_major_formatter(ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
     ax.set_axisbelow(True)
-    ax.minorticks_on()
     ax.grid(which='major', linestyle='dashed', linewidth='1')
     name = type.replace("/", "-")
-    plt.savefig(f"plots/{name}.png")
+    plt.savefig(f"plots/{name}.png", bbox_inches="tight")
     plt.clf()
     
 

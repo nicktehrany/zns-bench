@@ -13,7 +13,7 @@ CONFIG=$2.dat
 
 mkdir -p results
 # Clean in case old results are there
-rm -f results/{Fillseq,Fillrand,Readseq,Readrand}-$CONFIG
+rm -f results/{Fillseq,Fillrand,Overwrite,Updaterandom,Readseq,Readrand}-$CONFIG
 
 if [ "$2" = "config-4" ]; then
     CMD="sudo $DB_BENCH --fs_uri=zenfs://dev:$DIR --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"

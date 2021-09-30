@@ -27,5 +27,5 @@ Both these scripts come from [Zoned Storage](https://zonedstorage.io/getting-sta
 They are run as
 
 ```bash
-sudo ./nullblk.sh 4096 256 16 48
+sudo ./nullblk.sh 4096 64 8 24
 ```

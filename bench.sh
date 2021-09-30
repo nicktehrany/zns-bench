@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Exptect input 1: directory, 2: the number of the config given as e.g."config-0"
+# Exptect input 1: directory (for zenfs it's the device nullb0 or any other), 2: the number of the config given as e.g."config-0"
 if [ $# != 2 ]; then
     echo "Missing directory or data filename"
     exit 1
@@ -15,12 +15,11 @@ mkdir -p results
 # Clean in case old results are there
 rm -f results/{Fillseq,Fillrand,Readseq,Readrand}-$CONFIG
 
-CMD="$DB_BENCH --db=$DIR --benchmarks=fillseq,fillrandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
-
-# TODO: seperate cmd for config 4 with zenfs rocksdb plugin
-#CMD="$DB_BENCH --db=$DIR --benchmarks=fillseq,fillrandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
-
-echo "micros/op ops/sec MB/s" | tee results/Fillseq-$CONFIG results/Fillrand-$CONFIG results/Readseq-$CONFIG results/Readrand-$CONFIG > /dev/null
+if [ "$2" = "config-4" ]; then
+    CMD="sudo $DB_BENCH --fs_uri=zenfs://dev:$DIR --benchmarks=fillseq,fillrandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
+else
+    CMD="$DB_BENCH --db=$DIR --benchmarks=fillseq,fillrandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
+fi
 
 for ((i = 0 ; i < $ITERS ; i++)); do
     RESULT=$($CMD)

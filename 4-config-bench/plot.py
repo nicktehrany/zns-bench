@@ -64,7 +64,9 @@ def plot_benchmarks(data, type, benchs, t):
     ax.set_axisbelow(True)
     ax.grid(which='major', linestyle='dashed', linewidth='1')
     name = type.replace("/", "-")
-    plt.savefig(f"plots/{name}-{t}.pdf", bbox_inches="tight")
+    # pdf for paper and png for google docs
+    plt.savefig(f"plots/pdf/{name}-{t}.pdf", bbox_inches="tight")
+    plt.savefig(f"plots/png/{name}-{t}.png", bbox_inches="tight")
     plt.clf()
     
 
@@ -93,7 +95,8 @@ if __name__ == "__main__":
                     results[type][config][benchmark]['val'] = statistics.mean(df[type])
                     results[type][config][benchmark]['stdev'] = statistics.stdev(df[type])
 
-    os.makedirs("plots", exist_ok=True)
+    os.makedirs("plots/pdf", exist_ok=True)
+    os.makedirs("plots/png", exist_ok=True)
 
     for type in types:
         plot(results[type], type)

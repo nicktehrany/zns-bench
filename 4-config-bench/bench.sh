@@ -7,6 +7,8 @@ if [ $# != 2 ]; then
 fi
 
 ITERS=10
+
+# hardcode path to avaid long time looking for it.
 DB_BENCH=$(find $HOME | grep "rocksdb/db_bench$")
 DIR=$1
 CONFIG=$2.dat

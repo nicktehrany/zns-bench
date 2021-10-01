@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script comes from the Zoned Storage Documentation at https://zonedstorage.io/getting-started/nullblk/?#deleting-zbd-that-were-created-with-configfs
+
 if [ $# != 1 ]; then
     echo "Usage: $0 <nullb ID>"
     exit 1

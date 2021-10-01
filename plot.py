@@ -48,7 +48,7 @@ def plot_benchmarks(data, type, benchs, t):
 
     ax.set_ylabel(type)
     ax.set_xlabel("Benchmark")
-    ax.set_title(f"{type} for {t} Operatioins")
+    ax.set_title(f"{type} for {t} Operations")
     ax.set_xticks(x)
     ax.set_xticklabels(benchs)
     ax.legend(loc='best')

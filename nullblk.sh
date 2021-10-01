@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script comes from the Zoned Storage Documentation at https://zonedstorage.io/getting-started/nullblk/?#creating-a-null_blk-zoned-block-device-more-advanced-cases-configfs
+
 if [ $# != 4 ]; then
         echo "Usage: $0 <sect size (B)> <zone size (MB)> <nr conv zones> <nr seq zones>"
         exit 1

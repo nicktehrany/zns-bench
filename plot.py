@@ -64,7 +64,7 @@ def plot_benchmarks(data, type, benchs, t):
     ax.set_axisbelow(True)
     ax.grid(which='major', linestyle='dashed', linewidth='1')
     name = type.replace("/", "-")
-    plt.savefig(f"plots/{name}-{t}.png", bbox_inches="tight")
+    plt.savefig(f"plots/{name}-{t}.pdf", bbox_inches="tight")
     plt.clf()
     
 

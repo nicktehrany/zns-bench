@@ -71,32 +71,32 @@ def plot_benchmarks(data, type, benchs, t):
     
 
 if __name__ == "__main__":
-    results = dict(dict(dict()))
+    data = dict(dict(dict()))
     
     # Init the nested dict
     for type in types:
-        results[type] = dict()
+        data[type] = dict()
         for config in configs:
-            results[type][config] = dict()
+            data[type][config] = dict()
             for benchmark in benchmarks:
-                results[type][config][benchmark] = dict()
-                results[type][config][benchmark]['val'] = 0
-                results[type][config][benchmark]['stdev'] = 0
+                data[type][config][benchmark] = dict()
+                data[type][config][benchmark]['val'] = 0
+                data[type][config][benchmark]['stdev'] = 0
 
     for benchmark in benchmarks:
         for config in configs:
-            files = glob.glob(f"results/{benchmark}-{config}.dat")
+            files = glob.glob(f"data/{benchmark}-{config}.dat")
             for file in files:
                 df = pd.read_csv(file,
                     sep="\s+", 
                     skiprows=1, 
                     names=types)
                 for type in types:
-                    results[type][config][benchmark]['val'] = statistics.mean(df[type])
-                    results[type][config][benchmark]['stdev'] = statistics.stdev(df[type])
+                    data[type][config][benchmark]['val'] = statistics.mean(df[type])
+                    data[type][config][benchmark]['stdev'] = statistics.stdev(df[type])
 
     os.makedirs("plots/pdf", exist_ok=True)
     os.makedirs("plots/png", exist_ok=True)
 
     for type in types:
-        plot(results[type], type)
+        plot(data[type], type)

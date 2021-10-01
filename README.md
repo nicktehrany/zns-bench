@@ -1,7 +1,7 @@
 # ZNS benchmarking utility
 
 This repo contains a number the utility scripts for zns benchmarking and setting up.
-A lot of times there are missing privileges or other, then just check my [wkik](https://github.com/nicktehrany/notes/wiki/ZNS#recap-storage-protocols) for the full setup notes.
+A lot of times there are missing privileges or other, then just check my [wiki](https://github.com/nicktehrany/notes/wiki/ZNS#recap-storage-protocols) for the full setup notes.
 
 ## 4-config-bench/
 

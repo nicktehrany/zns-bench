@@ -9,7 +9,8 @@ fi
 ITERS=10
 
 # hardcode path to avaid long time looking for it.
-DB_BENCH=$(find $HOME | grep "rocksdb/db_bench$")
+#DB_BENCH=$(find $HOME | grep "rocksdb/db_bench$")
+DB_BENCH="/home/nty/src/rocksdb/db_bench"
 DIR=$1
 CONFIG=$2.dat
 
@@ -23,7 +24,7 @@ rm -f $DATADIR/{Fillseq,Fillrand,Overwrite,Updaterandom,Readseq,Readrand}-$CONFI
 if [ "$2" = "config-4" ]; then
     CMD="sudo $DB_BENCH --fs_uri=zenfs://dev:$DIR --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
 else
-    CMD="$DB_BENCH --db=$DIR --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
+    CMD="sudo $DB_BENCH --db=$DIR --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
 fi
 
 for ((i = 0 ; i < $ITERS ; i++)); do

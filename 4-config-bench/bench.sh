@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change variable to write data to different directory
-DATADIR="data"
+DATADIR="data_node3_nullblk"
 ITERS=10
 
 # Exptect input 1: directory (for zenfs it's the device nullb0 or any other), 2: the number of the config given as e.g."config-0"

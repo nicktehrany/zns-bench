@@ -10,7 +10,7 @@ import matplotlib.ticker as ticker
 benchmarks = ["Fillseq", "Fillrand", "Overwrite", "Updaterandom", "Readseq", "Readrand"]
 configs = ["config-1", "config-2", "config-3", "config-4"]
 types = ["microsec/op", "ops/sec", "MB/sec"]
-DATADIR="data/db_bench" 
+DATADIR="data_node3_nullblk/db_bench" 
 
 def plot(data, type):
     write = benchmarks[:4]
@@ -123,7 +123,7 @@ if __name__ == "__main__":
             data['perf'][type][config][benchmark]['stdev'] = 0
     
     # EDIT DATADIR AND BENCHMARK HERE
-    DATADIR="data/perf"
+    DATADIR="data_node3_nullblk/perf"
 
     for config in configs:
         # If data is in different dir change the argument below
@@ -145,5 +145,4 @@ if __name__ == "__main__":
     os.makedirs(f"{DATADIR}/plots/png", exist_ok=True)
 
     for type in types:
-        print(data['perf'][type])
         plot_perf(data['perf'][type], type, benchmark)

@@ -18,6 +18,9 @@ def plot(data, type):
     plot_benchmarks(data, type, write, "Write")
     plot_benchmarks(data, type, read, "Read")
 
+def plot_perf(data, type, benchmark):
+    plot_benchmarks(data, type, [benchmark], benchmark)
+
 def plot_benchmarks(data, type, benchs, t):
     config_1 = []
     config_2 = []
@@ -71,17 +74,18 @@ def plot_benchmarks(data, type, benchs, t):
     
 
 if __name__ == "__main__":
-    data = dict(dict(dict()))
+    data = dict(dict(dict(dict())))
 
     # Init the nested dict
+    data['db_bench'] = dict()
     for type in types:
-        data[type] = dict()
+        data['db_bench'][type] = dict()
         for config in configs:
-            data[type][config] = dict()
+            data['db_bench'][type][config] = dict()
             for benchmark in benchmarks:
-                data[type][config][benchmark] = dict()
-                data[type][config][benchmark]['val'] = 0
-                data[type][config][benchmark]['stdev'] = 0
+                data['db_bench'][type][config][benchmark] = dict()
+                data['db_bench'][type][config][benchmark]['val'] = 0
+                data['db_bench'][type][config][benchmark]['stdev'] = 0
 
     for benchmark in benchmarks:
         for config in configs:
@@ -93,11 +97,53 @@ if __name__ == "__main__":
                     skiprows=1, 
                     names=types)
                 for type in types:
-                    data[type][config][benchmark]['val'] = statistics.mean(df[type])
-                    data[type][config][benchmark]['stdev'] = statistics.stdev(df[type])
+                    data['db_bench'][type][config][benchmark]['val'] = statistics.mean(df[type])
+                    data['db_bench'][type][config][benchmark]['stdev'] = statistics.stdev(df[type])
 
     os.makedirs(f"{DATADIR}/plots/pdf", exist_ok=True)
     os.makedirs(f"{DATADIR}/plots/png", exist_ok=True)
 
     for type in types:
-        plot(data[type], type)
+        plot(data['db_bench'][type], type)
+
+    
+    #######################################
+    ########### PERF PLOTTING #############
+    #######################################
+
+    types = ["secs", "user-secs", "sys-secs", "cycles", "instructions", "inst/cycle", "context-switches", "page-faults"]
+    benchmark="fillseq"
+    data['perf'] = dict()
+    for type in types:
+        data['perf'][type] = dict()
+        for config in configs:
+            data['perf'][type][config] = dict()
+            data['perf'][type][config][benchmark] = dict()
+            data['perf'][type][config][benchmark]['val'] = 0
+            data['perf'][type][config][benchmark]['stdev'] = 0
+    
+    # EDIT DATADIR AND BENCHMARK HERE
+    DATADIR="data/perf"
+
+    for config in configs:
+        # If data is in different dir change the argument below
+        files = glob.glob(f"{DATADIR}/{benchmark}-{config}.dat")
+        for file in files:
+            df = pd.read_csv(file,
+                sep="\s+", 
+                skiprows=1, 
+                names=types)
+            df = df.replace(',','', regex=True)
+            df["cycles"] = pd.to_numeric(df["cycles"])
+            df["instructions"] = pd.to_numeric(df["instructions"])
+            df["page-faults"] = pd.to_numeric(df["page-faults"])
+            for type in types:
+                data['perf'][type][config][benchmark]['val'] = statistics.mean(df[type])
+                data['perf'][type][config][benchmark]['stdev'] = statistics.stdev(df[type])
+
+    os.makedirs(f"{DATADIR}/plots/pdf", exist_ok=True)
+    os.makedirs(f"{DATADIR}/plots/png", exist_ok=True)
+
+    for type in types:
+        print(data['perf'][type])
+        plot_perf(data['perf'][type], type, benchmark)

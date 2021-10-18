@@ -10,7 +10,7 @@ import matplotlib.ticker as ticker
 benchmarks = ["Fillseq", "Fillrand", "Overwrite", "Updaterandom", "Readseq", "Readrand"]
 configs = ["config-1", "config-2", "config-3", "config-4"]
 types = ["microsec/op", "ops/sec", "MB/sec"]
-
+DATADIR="data/db_bench" 
 
 def plot(data, type):
     write = benchmarks[:4]
@@ -65,14 +65,14 @@ def plot_benchmarks(data, type, benchs, t):
     ax.grid(which='major', linestyle='dashed', linewidth='1')
     name = type.replace("/", "-")
     # pdf for paper and png for google docs
-    plt.savefig(f"plots/pdf/{name}-{t}.pdf", bbox_inches="tight")
-    plt.savefig(f"plots/png/{name}-{t}.png", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/plots/pdf/{name}-{t}.pdf", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/plots/png/{name}-{t}.png", bbox_inches="tight")
     plt.clf()
     
 
 if __name__ == "__main__":
     data = dict(dict(dict()))
-    
+
     # Init the nested dict
     for type in types:
         data[type] = dict()
@@ -85,7 +85,8 @@ if __name__ == "__main__":
 
     for benchmark in benchmarks:
         for config in configs:
-            files = glob.glob(f"data/{benchmark}-{config}.dat")
+            # If data is in different dir change the argument below
+            files = glob.glob(f"{DATADIR}/{benchmark}-{config}.dat")
             for file in files:
                 df = pd.read_csv(file,
                     sep="\s+", 
@@ -95,8 +96,8 @@ if __name__ == "__main__":
                     data[type][config][benchmark]['val'] = statistics.mean(df[type])
                     data[type][config][benchmark]['stdev'] = statistics.stdev(df[type])
 
-    os.makedirs("plots/pdf", exist_ok=True)
-    os.makedirs("plots/png", exist_ok=True)
+    os.makedirs(f"{DATADIR}/plots/pdf", exist_ok=True)
+    os.makedirs(f"{DATADIR}/plots/png", exist_ok=True)
 
     for type in types:
         plot(data[type], type)

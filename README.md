@@ -14,10 +14,10 @@ This is a small benchmarking script that I used for benchmarking the possible di
 It requires 2 arguments,
 
    ```bash
-   ./bench.sh [mnt-dir] [config-nr]
+   ./bench.sh -m [mnt-dir] -c [config-nr]
 
-   mnt-dir: /mnt/f2fs (for config-4 this is the device name, e.g. nullb0)
-   config-nr: config-* (1-4, has to be this exact naming!)
+   -m [mnt-dir]: /mnt/f2fs (for config-4 this is the device name, e.g. nullb0)
+   -c [config-nr]: 1-4 
    ```
 
 ### 4-config-bench/plot.py

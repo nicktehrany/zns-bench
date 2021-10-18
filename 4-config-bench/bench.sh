@@ -4,7 +4,6 @@
 DATADIR="data_node3_nullblk"
 ITERS=10
 
-# Exptect input 1: directory (for zenfs it's the device nullb0 or any other), 2: the number of the config given as e.g."config-0"
 usage(){
     printf "Invalid params. Expexted\n./bench.sh -m [/mnt/f2fs] -c [1-4] [-p Benchmark]\n\t-m: Mount location to run db_bench on\n\t-c: Config number\n\t-p: Run perf profiling with the following benchmark (from db_bench, just one!)\n"
     exit 1

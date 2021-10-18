@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import glob
 import matplotlib.ticker as ticker
+from matplotlib.ticker import FormatStrFormatter
 
 benchmarks = ["Fillseq", "Fillrand", "Overwrite", "Updaterandom", "Readseq", "Readrand"]
 configs = ["config-1", "config-2", "config-3", "config-4"]
@@ -19,7 +20,25 @@ def plot(data, type):
     plot_benchmarks(data, type, read, "Read")
 
 def plot_perf(data, type, benchmark):
-    plot_benchmarks(data, type, [benchmark], benchmark)
+    vals = []
+    stdevs = []
+    for config in configs:
+        vals.append(data[config][benchmark]['val'])
+        stdevs.append(data[config][benchmark]['stdev'])
+
+    y_pos = np.arange(len(vals))
+    plt.bar(y_pos, vals, color=["blue", "orange", "green", "red"], yerr=stdevs, capsize=5, zorder=3)
+    plt.xticks(y_pos, configs)
+    plt.xlabel("Configuration")
+    plt.ylabel(type)
+    plt.title(f"{type} for {benchmark}")
+    plt.grid(which='major', linestyle='dashed', linewidth='1', zorder=0)
+    name = type.replace("/", "-")
+    # pdf for paper and png for google docs
+    plt.savefig(f"{DATADIR}/plots/pdf/{name}-{benchmark}.pdf", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/plots/png/{name}-{benchmark}.png", bbox_inches="tight")
+    plt.clf()
+
 
 def plot_benchmarks(data, type, benchs, t):
     config_1 = []
@@ -137,6 +156,7 @@ if __name__ == "__main__":
             df["cycles"] = pd.to_numeric(df["cycles"])
             df["instructions"] = pd.to_numeric(df["instructions"])
             df["page-faults"] = pd.to_numeric(df["page-faults"])
+            df["context-switches"] = pd.to_numeric(df["context-switches"])
             for type in types:
                 data['perf'][type][config][benchmark]['val'] = statistics.mean(df[type])
                 data['perf'][type][config][benchmark]['stdev'] = statistics.stdev(df[type])

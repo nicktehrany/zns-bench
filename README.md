@@ -11,18 +11,21 @@ Contains benchmarkign script, results, and plotting script for the benchmark of 
 
 This is a small benchmarking script that I used for benchmarking the possible different configurations for zoned block devices compared to regular block devices. It runs a rocksdb benchmark with rocksdb on a mounted device (mounted with the possible configurations).
 
-It requires 2 arguments,
+It requires
 
-   ```bash
-   ./bench.sh -m [mnt-dir] -c [config-nr]
+```bash
+./bench.sh -m [mnt-dir] -c [config-nr]
 
    -m [mnt-dir]: /mnt/f2fs (for config-4 this is the device name, e.g. nullb0)
    -c [config-nr]: 1-4 
-   ```
+   -p [Benchmark]: Run with perf profiling stats on the Benchmark (from db_bench and just one benchmark!)
+```
+
+It collects all the data in the specified data dir (in the script, change to change dir) in a `db_bench` dir and a possible (if flag passed) `perf` dir. All can then be plotted.
 
 ### 4-config-bench/plot.py
 
-This is a small plotting script that will plot all the data collected by the `bench.sh` script and put them in `plots/`. The script is based on the previously mentioned naming, therefore requires the exact names in the benchmarking script
+This is a small plotting script that will plot all the data collected by the `bench.sh` script and put them in `plots/` dir of the data folder (e.g. in `db_bench/`). The script is based on the previously mentioned naming, therefore requires the exact names in the benchmarking script. The plots will be stored as `.png` and `.pdf` in the respective dir.
 
 ## nullblk.sh nullblk_zoned.sh & nullblk_delete.sh
 

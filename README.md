@@ -24,9 +24,9 @@ It requires 2 arguments,
 
 This is a small plotting script that will plot all the data collected by the `bench.sh` script and put them in `plots/`. The script is based on the previously mentioned naming, therefore requires the exact names in the benchmarking script
 
-## nullblk.sh & nullblk_delete.sh
+## nullblk.sh nullblk_zoned.sh & nullblk_delete.sh
 
-Both these scripts come from [Zoned Storage](https://zonedstorage.io/getting-started/nullblk/?#creating-a-null_blk-zoned-block-device-more-advanced-cases-configfs) for creating null block devices and deleting it again. It automatically configures the emulated device to be memory backed (so we can mount a f2 or other on it and write to it).
+All these scripts come from [Zoned Storage](https://zonedstorage.io/getting-started/nullblk/?#creating-a-null_blk-zoned-block-device-more-advanced-cases-configfs) for creating null block devices (regular block device and zoned block device) and deleting it again. It automatically configures the emulated device to be memory backed (so we can mount a f2 or other on it and write to it).
 
 They are run as
 

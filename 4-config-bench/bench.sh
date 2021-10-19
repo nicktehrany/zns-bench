@@ -60,7 +60,7 @@ if [ "$PERF" == true ]; then
         echo $RESULT >> $DATADIR/perf/$BENCH-$CONFIG
     done
 else
-    echo "Running regular benchmark"
+    echo "Running db_bench without perf"
     if [ "$CONFIG" = "config-4.dat" ]; then
         CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
     else

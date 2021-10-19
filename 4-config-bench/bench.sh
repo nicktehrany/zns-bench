@@ -66,6 +66,7 @@ else
     else
         CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH $DB_BENCH --db=$MNT --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
     fi
+    rm -f $DATADIR/db_bench/{Fillseq,Fillrand,Overwrite,Updaterandom,Readseq,Readrand}-$CONFIG
 
     for ((i = 0 ; i < $ITERS ; i++)); do
         RESULT=$($CMD)

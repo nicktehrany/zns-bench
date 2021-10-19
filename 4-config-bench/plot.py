@@ -8,7 +8,7 @@ import glob
 import matplotlib.ticker as ticker
 from matplotlib.ticker import FormatStrFormatter
 
-benchmarks = ["Fillseq", "Fillrand", "Overwrite", "Updaterandom", "Readseq", "Readrand"]
+benchmarks = ["fillseq", "fillrandom", "overwrite", "updaterandom", "readseq", "readrandom"]
 configs = ["config-1", "config-2", "config-3", "config-4"]
 types = ["microsec/op", "ops/sec", "MB/sec"]
 DATADIR="data_node3_nullblk/db_bench" 
@@ -35,8 +35,8 @@ def plot_perf(data, type, benchmark):
     plt.grid(which='major', linestyle='dashed', linewidth='1', zorder=0)
     name = type.replace("/", "-")
     # pdf for paper and png for google docs
-    plt.savefig(f"{DATADIR}/plots/pdf/{name}-{benchmark}.pdf", bbox_inches="tight")
-    plt.savefig(f"{DATADIR}/plots/png/{name}-{benchmark}.png", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/plots/pdf/{benchmark}-{name}.pdf", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/plots/png/{benchmark}-{name}.png", bbox_inches="tight")
     plt.clf()
 
 
@@ -131,38 +131,40 @@ if __name__ == "__main__":
     #######################################
 
     types = ["secs", "user-secs", "sys-secs", "cycles", "instructions", "inst/cycle", "context-switches", "page-faults"]
-    benchmark="fillseq"
     data['perf'] = dict()
     for type in types:
         data['perf'][type] = dict()
         for config in configs:
             data['perf'][type][config] = dict()
-            data['perf'][type][config][benchmark] = dict()
-            data['perf'][type][config][benchmark]['val'] = 0
-            data['perf'][type][config][benchmark]['stdev'] = 0
+            for benchmark in benchmarks:
+                data['perf'][type][config][benchmark] = dict()
+                data['perf'][type][config][benchmark]['val'] = 0
+                data['perf'][type][config][benchmark]['stdev'] = 0
     
     # EDIT DATADIR AND BENCHMARK HERE
     DATADIR="data_node3_nullblk/perf"
 
-    for config in configs:
-        # If data is in different dir change the argument below
-        files = glob.glob(f"{DATADIR}/{benchmark}-{config}.dat")
-        for file in files:
-            df = pd.read_csv(file,
-                sep="\s+", 
-                skiprows=1, 
-                names=types)
-            df = df.replace(',','', regex=True)
-            df["cycles"] = pd.to_numeric(df["cycles"])
-            df["instructions"] = pd.to_numeric(df["instructions"])
-            df["page-faults"] = pd.to_numeric(df["page-faults"])
-            df["context-switches"] = pd.to_numeric(df["context-switches"])
-            for type in types:
-                data['perf'][type][config][benchmark]['val'] = statistics.mean(df[type])
-                data['perf'][type][config][benchmark]['stdev'] = statistics.stdev(df[type])
+    for benchmark in benchmarks:
+        for config in configs:
+            # If data is in different dir change the argument below
+            files = glob.glob(f"{DATADIR}/{benchmark}-{config}.dat")
+            for file in files:
+                df = pd.read_csv(file,
+                    sep="\s+", 
+                    skiprows=1, 
+                    names=types)
+                df = df.replace(',','', regex=True)
+                df["cycles"] = pd.to_numeric(df["cycles"])
+                df["instructions"] = pd.to_numeric(df["instructions"])
+                df["page-faults"] = pd.to_numeric(df["page-faults"])
+                df["context-switches"] = pd.to_numeric(df["context-switches"])
+                for type in types:
+                    data['perf'][type][config][benchmark]['val'] = statistics.mean(df[type])
+                    data['perf'][type][config][benchmark]['stdev'] = statistics.stdev(df[type])
 
     os.makedirs(f"{DATADIR}/plots/pdf", exist_ok=True)
     os.makedirs(f"{DATADIR}/plots/png", exist_ok=True)
 
-    for type in types:
-        plot_perf(data['perf'][type], type, benchmark)
+    for benchmark in benchmarks:
+        for type in types:
+            plot_perf(data['perf'][type], type, benchmark)

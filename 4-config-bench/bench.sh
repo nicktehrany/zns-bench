@@ -82,16 +82,16 @@ else
     else
         CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH $DB_BENCH --db=$MNT --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
     fi
-    rm -f $DATADIR/db_bench/{Fillseq,Fillrand,Overwrite,Updaterandom,Readseq,Readrand}-$CONFIG
+    rm -f $DATADIR/db_bench/{fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom}-$CONFIG
 
     for ((i = 0 ; i < $ITERS ; i++)); do
         RESULT=$($CMD)
         # written as: micros/op, ops/sec, MB/s
-        echo "${RESULT}" | grep "fillseq" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/Fillseq-$CONFIG
-        echo "${RESULT}" | grep "fillrand" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/Fillrand-$CONFIG
-        echo "${RESULT}" | grep "overwrite" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/Overwrite-$CONFIG
-        echo "${RESULT}" | grep "updaterandom" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/Updaterandom-$CONFIG
-        echo "${RESULT}" | grep "readseq" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/Readseq-$CONFIG
-        echo "${RESULT}" | grep "readrand" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/Readrand-$CONFIG
+        echo "${RESULT}" | grep "fillseq" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/fillseq-$CONFIG
+        echo "${RESULT}" | grep "fillrand" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/fillrandom-$CONFIG
+        echo "${RESULT}" | grep "overwrite" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/overwrite-$CONFIG
+        echo "${RESULT}" | grep "updaterandom" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/updaterandom-$CONFIG
+        echo "${RESULT}" | grep "readseq" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/readseq-$CONFIG
+        echo "${RESULT}" | grep "readrand" | awk '{print $3,$5,$7}' >> $DATADIR/db_bench/readrandom-$CONFIG
     done
 fi

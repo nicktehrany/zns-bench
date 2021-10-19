@@ -44,7 +44,7 @@ REUSE=""
 
 if [ "$PERF" == true ]; then
     # If overwrite or updaterandom we need to create a db to reuse.
-    if [[ "$BENCH" == "overwrite" || "$BENCH" == "updaterandom" ]]; then
+    if [[ "$BENCH" == "overwrite" || "$BENCH" == "updaterandom" || "$BENCH" == "readseq" || "$BENCH" == "readrandom" ]]; then
         echo "Creating db to reuse."
         if [ "$CONFIG" = "config-4.dat" ]; then
             sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=fillseq --key_size=16 --value_size=100 --num=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none &> /dev/null
@@ -54,13 +54,14 @@ if [ "$PERF" == true ]; then
         REUSE="--use_existing_db"
     fi
         
-    fi
     echo "Running perf benchmark"
     if [ "$CONFIG" = "config-4.dat" ]; then
-        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none $REUSE"
+        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none $REUSE"
     else
-        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --db=$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none $REUSE"
+        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --db=$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none $REUSE"
     fi
+    rm -f $DATADIR/perf/$BENCH-$CONFIG
+
     for ((i = 0 ; i < $ITERS ; i++)); do
         $CMD
 
@@ -77,9 +78,9 @@ if [ "$PERF" == true ]; then
 else
     echo "Running db_bench without perf"
     if [ "$CONFIG" = "config-4.dat" ]; then
-        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
+        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
     else
-        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH $DB_BENCH --db=$MNT --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
+        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH $DB_BENCH --db=$MNT --benchmarks=fillseq,fillrandom,overwrite,updaterandom,readseq,readrandom --key_size=16 --value_size=100 --num=1000000 --reads=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
     fi
     rm -f $DATADIR/db_bench/{Fillseq,Fillrand,Overwrite,Updaterandom,Readseq,Readrand}-$CONFIG
 

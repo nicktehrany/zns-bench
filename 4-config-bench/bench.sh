@@ -37,14 +37,29 @@ done
 #DB_BENCH=$(find $HOME | grep "rocksdb/db_bench$")
 DB_BENCH="/home/nty/src/rocksdb/db_bench"
 
+# Whether to reuse db.
+REUSE=""
+
 [ "$PERF" == true ] && mkdir -p $DATADIR/{db_bench,perf} || mkdir -p $DATADIR/db_bench
 
 if [ "$PERF" == true ]; then
+    # If overwrite or updaterandom we need to create a db to reuse.
+    if [[ "$BENCH" == "overwrite" || "$BENCH" == "updaterandom" ]]; then
+        echo "Creating db to reuse."
+        if [ "$CONFIG" = "config-4.dat" ]; then
+            sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=fillseq --key_size=16 --value_size=100 --num=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none &> /dev/null
+        else
+            sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH $DB_BENCH --db=$MNT --benchmarks=fillseq --key_size=16 --value_size=100 --num=1000000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none &> /dev/null
+        fi
+        REUSE="--use_existing_db"
+    fi
+        
+    fi
     echo "Running perf benchmark"
     if [ "$CONFIG" = "config-4.dat" ]; then
-        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
+        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --fs_uri=zenfs://dev:$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none $REUSE"
     else
-        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --db=$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none"
+        CMD="sudo env LD_LIBRARY_PATH=/home/nty/local/lib:/$LD_LIBRARY_PATH PATH=/home/nty/local/bin/:/home/nty/src/dm-zoned-tools/:/home/nty/src/f2fs-tools-1.14.0/mkfs/:$PATH perf stat -o tmp.dat $DB_BENCH --db=$MNT --benchmarks=$BENCH --key_size=16 --value_size=100 --num=1000000 --reads=100000 --use_direct_reads --use_direct_io_for_flush_and_compaction --compression_type=none $REUSE"
     fi
     for ((i = 0 ; i < $ITERS ; i++)); do
         $CMD

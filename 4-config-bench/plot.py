@@ -11,7 +11,9 @@ from matplotlib.ticker import FormatStrFormatter
 benchmarks = ["fillseq", "fillrandom", "overwrite", "updaterandom", "readseq", "readrandom"]
 configs = ["config-1", "config-2", "config-3", "config-4"]
 types = ["microsec/op", "ops/sec", "MB/sec"]
-DATADIR="data_node3_nullblk/db_bench" 
+
+# CHANGE DATADIR HERE!
+DATADIR="data_node3_nullblk" 
 
 def plot(data, type):
     write = benchmarks[:4]
@@ -35,8 +37,8 @@ def plot_perf(data, type, benchmark):
     plt.grid(which='major', linestyle='dashed', linewidth='1', zorder=0)
     name = type.replace("/", "-")
     # pdf for paper and png for google docs
-    plt.savefig(f"{DATADIR}/plots/pdf/{benchmark}-{name}.pdf", bbox_inches="tight")
-    plt.savefig(f"{DATADIR}/plots/png/{benchmark}-{name}.png", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/perf/plots/pdf/{benchmark}-{name}.pdf", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/perf/plots/png/{benchmark}-{name}.png", bbox_inches="tight")
     plt.clf()
 
 
@@ -87,8 +89,8 @@ def plot_benchmarks(data, type, benchs, t):
     ax.grid(which='major', linestyle='dashed', linewidth='1')
     name = type.replace("/", "-")
     # pdf for paper and png for google docs
-    plt.savefig(f"{DATADIR}/plots/pdf/{name}-{t}.pdf", bbox_inches="tight")
-    plt.savefig(f"{DATADIR}/plots/png/{name}-{t}.png", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/db_bench/plots/pdf/{name}-{t}.pdf", bbox_inches="tight")
+    plt.savefig(f"{DATADIR}/db_bench/plots/png/{name}-{t}.png", bbox_inches="tight")
     plt.clf()
     
 
@@ -109,7 +111,7 @@ if __name__ == "__main__":
     for benchmark in benchmarks:
         for config in configs:
             # If data is in different dir change the argument below
-            files = glob.glob(f"{DATADIR}/{benchmark}-{config}.dat")
+            files = glob.glob(f"{DATADIR}/db_bench/{benchmark}-{config}.dat")
             for file in files:
                 df = pd.read_csv(file,
                     sep="\s+", 
@@ -119,8 +121,8 @@ if __name__ == "__main__":
                     data['db_bench'][type][config][benchmark]['val'] = statistics.mean(df[type])
                     data['db_bench'][type][config][benchmark]['stdev'] = statistics.stdev(df[type])
 
-    os.makedirs(f"{DATADIR}/plots/pdf", exist_ok=True)
-    os.makedirs(f"{DATADIR}/plots/png", exist_ok=True)
+    os.makedirs(f"{DATADIR}/db_bench/plots/pdf", exist_ok=True)
+    os.makedirs(f"{DATADIR}/db_bench/plots/png", exist_ok=True)
 
     for type in types:
         plot(data['db_bench'][type], type)
@@ -141,13 +143,9 @@ if __name__ == "__main__":
                 data['perf'][type][config][benchmark]['val'] = 0
                 data['perf'][type][config][benchmark]['stdev'] = 0
     
-    # EDIT DATADIR AND BENCHMARK HERE
-    DATADIR="data_node3_nullblk/perf"
-
     for benchmark in benchmarks:
         for config in configs:
-            # If data is in different dir change the argument below
-            files = glob.glob(f"{DATADIR}/{benchmark}-{config}.dat")
+            files = glob.glob(f"{DATADIR}/perf/{benchmark}-{config}.dat")
             for file in files:
                 df = pd.read_csv(file,
                     sep="\s+", 
@@ -162,8 +160,8 @@ if __name__ == "__main__":
                     data['perf'][type][config][benchmark]['val'] = statistics.mean(df[type])
                     data['perf'][type][config][benchmark]['stdev'] = statistics.stdev(df[type])
 
-    os.makedirs(f"{DATADIR}/plots/pdf", exist_ok=True)
-    os.makedirs(f"{DATADIR}/plots/png", exist_ok=True)
+    os.makedirs(f"{DATADIR}/perf/plots/pdf", exist_ok=True)
+    os.makedirs(f"{DATADIR}/perf/plots/png", exist_ok=True)
 
     for benchmark in benchmarks:
         for type in types:

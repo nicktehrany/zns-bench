@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change variable to write data to different directory
-DATADIR="data_node3_nullblk"
+DATADIR="data_node3_zns_hw"
 ITERS=10
 
 usage(){
